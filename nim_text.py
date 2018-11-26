@@ -1,4 +1,5 @@
 # We're going object oriented here, so let's do this via a class called Game
+import os
 
 class Game():
     def __init__(self):
@@ -13,7 +14,7 @@ class Game():
         for i in range(n):
             self.stacks.append((2*i)+1)  # classically it will be 2n+1, so 1, 3, 5, 7, etc, can alter this too
         while self.running:  # This is the game loop
-            print('\n'*5)   # clear a bunch of the terminal to make it less noisy
+            os.system('clear')   # clear a bunch of the terminal to make it less noisy
             print("Current stack values:")
             print('\n')
             for i in range(n):  # Remember how many stacks we made?
@@ -42,7 +43,7 @@ class Game():
                 self.turn = "Player 1"
 
         
-        print('\n'*5)
+        os.system('clear')
 
         print("No pieces left!")
 
