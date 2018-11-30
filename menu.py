@@ -52,8 +52,8 @@ class StartMenu(Frame):
             self.game.main()
         except RuntimeError:
             print ("bitch, just click once")
-    # quits the whole program and destrys window, python stops running
 
+    # quits the whole program and destrys window, python stops running
     def stop(self):
         self.master.destroy()
         raise SystemExit
@@ -61,4 +61,3 @@ class StartMenu(Frame):
 root = Tk()
 app = StartMenu(master=root)
 app.mainloop()
-app.destroy()
