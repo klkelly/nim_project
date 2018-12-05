@@ -63,6 +63,7 @@ class Nim(Frame):
         print("keven JUST PUSH")
 
     def play(self):
+        print ("play")
         try:
             self.box.destroy()
             self.hi_there.destroy()
