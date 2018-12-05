@@ -15,8 +15,10 @@ class Nim(Frame):
         self.stacks = []
         self.mode_labels = ["1vCPU", "1v1"]
         self.stacks_labels = ["3", "4", "5", "6", "7"]
+        self.game = game(self)
         self.start()
     def start(self):
+        self.game.grid_remove()
         self.start = start(self)
         self.start.grid(sticky=N+S+E+W)
 
@@ -25,6 +27,7 @@ class Nim(Frame):
         self.player_modeLabel = Label(self, text=self.mode_labels[self.mode])
 
     def rules(self):
+        print("rules")
         pass
 
     def stack_set(self, var):
@@ -33,7 +36,10 @@ class Nim(Frame):
         print (var)
 
     def play(self):
-        print("play!")
+        print("play")
+        self.start.grid_remove()
+        self.game.grid(sticky=N+S+E+W)
+
 
     def quit(self):
         print("quitting")
@@ -44,8 +50,8 @@ class start(Nim):
     def __init__(self, master=None): 
         super().callconstructor(master) # We call the frame constructor
         self.master = master # master is gonna be the instance of nim
-        self.width = 350
-        self.height = 200
+        self.width = 3500
+        self.height = 2000
         self.make_widgets()
     def make_widgets(self):
         # A window set up with a title, and buttons that will change options, plus a 'start game' option.
@@ -56,7 +62,7 @@ class start(Nim):
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
         self.stacksLabel = Label(self, text = "Stacks:")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
-        self.startButton = Button(self, cursor = "hand2", text="Start Game", command=self.master.play, fg="green")
+        self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.stacks3Button = Button(self, cursor = "hand2", text ="3", command = self.master.stack_set(0))
         self.stacks4Button = Button(self, cursor = "hand2", text ="4", command = self.master.stack_set(1))
@@ -83,6 +89,20 @@ class start(Nim):
     def quit(self):
         super().quit()
 
+class game(Nim):
+    def __init__(self,master=None):
+        super().callconstructor(master) # We call the frame constructor
+        self.master = master # master is gonna be the instance of nim
+        self.width = 3500
+        self.height = 2000
+        self.make_widgets()
+    def make_widgets(self):
+        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.start, fg="green")
+        self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
+        self.menuButton.grid()
+        self.quitButton.grid()
+    def quit(self):
+        super().quit()
 
 
 if __name__ == "__main__":

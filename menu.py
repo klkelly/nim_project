@@ -37,8 +37,12 @@ class Nim(Frame):
         #creates another frame inside the bigger application frame
         # when clicked, it calls the clicked method. This is not a button
         self.box = Frame(self,width=100, height=100,cursor = "hand1")
+        self.box.grid_propagate(0)
+        self.boxception= Frame(self.box, width= 5, height = 5, bg="red")
         self.box.bind("<Button-1>", self.clicked)
         self.box.grid(sticky=N+S+E+W)
+        self.boxception.grid(sticky=N+S+E+W)
+
     
     def recreate_widgets(self):
         self.back.destroy() 
@@ -49,8 +53,10 @@ class Nim(Frame):
         # places in grid
         self.hi_there.grid(sticky=N+S+E+W)
         self.box = Frame(self,width=100, height=100,cursor = "hand1")
+        self.box.grid_propagate(0)
         self.box.bind("<Button-1>", self.clicked)
         self.box.grid(sticky=N+S+E+W)
+        self.box.grid_propagate()
 
     def clicked(self, event):
         print ("clicked at", event.x, event.y)
@@ -65,7 +71,7 @@ class Nim(Frame):
     def play(self):
         print ("play")
         try:
-            self.box.destroy()
+            self.box.grid_remove()
             self.hi_there.destroy()
             self.start.destroy()
             self.back = Button(self, text = "Go Back", command = self.recreate_widgets)
