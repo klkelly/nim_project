@@ -150,10 +150,10 @@ class game(Nim):
         self.master = master # master is gonna be the instance of nim
         self.turn = 1
         self.stack = self.master.stack
-        self.make_widgets()
-        self.stack_selected= None
         self.gameOver = 0
         self.lastPlay = 0
+        self.make_widgets()
+        self.stack_selected= None
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
@@ -187,32 +187,14 @@ class game(Nim):
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
-            if self.gameOver = 0:
+            if self.gameOver == 0:
                 self.lastPlay = self.turn
+                if not self.master.misere:
+                    self.turnLabel["text"] = self.print_turn()
             self.gameOver = 1
+            if not self.master.misere:
+                self.turnLabel["text"] = self.print_turn()
             self.nextButton["state"]=DISABLED
-            #if in mesere version, the last person to get an item, loses
-            if self.master.misere:
-                #player 1 had the last turn
-                if self.turn:
-                    if self.master.CPUplayer == 0:
-                        self.turnLabel["text"] = "Player 2 wins!"
-                    else:
-                        self.turnLabel["text"] = "CPU wins!"
-                #player 2 had the last turn
-                else:
-                    self.turnLabel["text"] = "Player 1 wins!"
-            # in normal version, the last to get an item wins
-            else:
-                #player 1 had the last turn
-                if self.turn:
-                    self.turnLabel["text"] = "Player 1 wins!"
-                #player 2 had the last turn
-                else:
-                    if self.master.CPUplayer == 0:
-                        self.turnLabel["text"] = "Player 2 wins!"
-                    else:
-                        self.turnLabel["text"] = "CPU wins!"
 
 
     def next_turn(self):
@@ -330,10 +312,33 @@ class game(Nim):
         print("im a robot weeeee")
 
     def print_turn(self):
-        if self.turn:
-            return("Player 1's turn")
+        if self.gameOver == 1:
+            if self.master.misere:
+                #player 1 had the last turn
+                if self.lastPlay:
+                    if self.master.CPUplayer == 0:
+                        self.turnLabel["text"] = "Player 2 wins!"
+                    else:
+                        self.turnLabel["text"] = "CPU wins!"
+                #player 2 had the last turn
+                else:
+                    self.turnLabel["text"] = "Player 1 wins!"
+            # in normal version, the last to get an item wins
+            else:
+                #player 1 had the last turn
+                if not self.lastPlay:
+                    self.turnLabel["text"] = "Player 1 wins!"
+                #player 2 had the last turn
+                else:
+                    if self.master.CPUplayer == 0:
+                        self.turnLabel["text"] = "Player 2 wins!"
+                    else:
+                        self.turnLabel["text"] = "CPU wins!"
         else:
-            return("Player 2's turn")
+            if self.turn:
+                return("Player 1's turn")
+            else:
+                return("Player 2's turn")
 
     def quit(self):
         super().quit()
