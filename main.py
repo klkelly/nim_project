@@ -71,8 +71,8 @@ class start(Nim):
         self.sett = LabelFrame(self,text="Settings",labelanchor="n")
 
         self.sett.empty = Frame(self.sett,width=20) #spacer
-        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(0))
-        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(1))
+        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(1))
+        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(0))
         self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
         self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
         
@@ -123,6 +123,7 @@ class game(Nim):
         self.master = master # master is gonna be the instance of nim
         self.turn = 1
         self.make_widgets()
+        self.stack_selected= None
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
@@ -143,25 +144,44 @@ class game(Nim):
         for i in range(len(self.stack)):
             butt = Button(self.container,cursor = "hand2", disabledforeground= "#999",text = self.stack[i],command= lambda a=i: self.remove_one(a))
             self.stackbuttons.append(butt)
-            self.stackbuttons[i].grid(column=i,row= 0)
+            self.stackbuttons[i].grid(column=i,row= 0,sticky = E+W)
 
     def remove_one(self,a):
-        if self.stack[a]>0:
-            self.stack[a] -= 1
-            # TODO make stackbuttons[a]["text"] change accordingly
-        if self.stack[a]==0:
-            self.stackbuttons[a]["state"]=DISABLED
-        self.check_win()
+        if self.stack_selected == a or self.stack_selected == None:
+            self.stack_selected = a
+            if self.stack[a]>0:
+                self.stack[a] -= 1
+                # TODO make stackbuttons[a]["text"] change accordingly
+            if self.stack[a]==0:
+                self.stackbuttons[a]["state"]=DISABLED
+            self.check_win()
+        else:
+            print("you cant select two different stacks bitch")
     
     def check_win(self):
         if all(i == 0 for i in self.stack):
-            print ("someone won!")
+            #if in mesere version, the last person to get an item, loses
+            if self.master.misere:
+                #player 1 had the last turn
+                if self.turn:
+                    print ("player 2 wins")
+                #player 2 had the last turn
+                else:
+                    print("player 1 wins")
+            # in normal version, the last to get an item wins
+            else:
+                #player 1 had the last turn
+                if self.turn:
+                    print ("player 1 wins")
+                #player 2 had the last turn
+                else:
+                    print("player 2 wins")
 
-        
 
     def next_turn(self):
         self.turn = not self.turn
         self.turnLabel["text"]= self.print_turn()
+        self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
         else:
