@@ -411,7 +411,7 @@ class game(Nim):
             # in normal version, the last to get an item wins
             else:
                 #player 1 had the last turn
-                if not self.lastPlay:
+                if self.lastPlay:
                     self.turnLabel["text"] = "Player 1 wins!"
                 #player 2 had the last turn
                 else:
