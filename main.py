@@ -71,8 +71,8 @@ class start(Nim):
         self.sett = LabelFrame(self,text="Settings",labelanchor="n")
 
         self.sett.empty = Frame(self.sett,width=20) #spacer
-        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(0))
-        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(1))
+        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(1))
+        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(0))
         self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
         self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
         
@@ -148,13 +148,16 @@ class game(Nim):
     def remove_one(self,a):
         if self.stack[a]>0:
             self.stack[a] -= 1
+            self.stackbuttons[a]["text"] = self.stack[a]
             # TODO make stackbuttons[a]["text"] change accordingly
         if self.stack[a]==0:
             self.stackbuttons[a]["state"]=DISABLED
         self.check_win()
     
     def check_win(self):
-        pass
+        if all([ i==0 for i in self.stack]):
+            pass
+
 
     def next_turn(self):
         self.turn = not self.turn
