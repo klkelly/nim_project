@@ -1,6 +1,7 @@
 #! usr/bin/env python3
 
 from tkinter import *
+from random import randint
 
 class Nim(Frame):
     def callconstructor(self, ref):
@@ -150,7 +151,6 @@ class game(Nim):
             self.stack = [1,3,5]
         else:
             self.stack = [1,1,1]
-        self.gameOver = 0
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
@@ -186,14 +186,16 @@ class game(Nim):
             print("you cant select two different stacks bitch")
     
     def check_win(self):
-        if all(i == 0 for i in self.stack):
-            self.gameOver = 1
-            self.nextButton["state"]= DISABLED
+        if all([ i==0 for i in self.stack]):
+            self.nextButton["state"]=DISABLED
             #if in mesere version, the last person to get an item, loses
             if self.master.misere:
                 #player 1 had the last turn
                 if self.turn:
-                    self.turnLabel["text"] = "Player 2 wins!"
+                    if self.master.CPUplayer == 0:
+                        self.turnLabel["text"] = "Player 2 wins!"
+                    else:
+                        self.turnLabel["text"] = "CPU wins!"
                 #player 2 had the last turn
                 else:
                     self.turnLabel["text"] = "Player 1 wins!"
@@ -204,7 +206,10 @@ class game(Nim):
                     self.turnLabel["text"] = "Player 1 wins!"
                 #player 2 had the last turn
                 else:
-                    self.turnLabel["text"] = "Player 2 wins!"
+                    if self.master.CPUplayer == 0:
+                        self.turnLabel["text"] = "Player 2 wins!"
+                    else:
+                        self.turnLabel["text"] = "CPU wins!"
 
 
     def next_turn(self):
@@ -217,14 +222,32 @@ class game(Nim):
         self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
-            self.check_win()
-        else:
-            self.check_win()
-
+        self.check_win()
 
 
 # algorithm goes here
     def cpu_turn(self):
+        nim_sum = 0
+        for i in range(len(self.stack)):
+            nim_sum = nim_sum^self.stack[i]
+        if nim_sum == 0:
+            ran1 = randint(0,len(self.stack)-1)
+            while not self.stack[ran1]:
+                ran1 = randint(0,len(self.stack)-1)
+            ran2 = randint(1,self.stack[ran1])
+            self.stack[ran1] -= ran2
+            self.stackbuttons[ran1]["text"] = self.stack[ran1]
+            if self.stack[ran1] == 0:
+                self.stack[ran1]["state"]=DISABLED
+        else:
+            for i in range(len(self.stack)):
+                if self.stack[i]^nim_sum < self.stack[i]:
+                    self.stack[i] = self.stack[i]^nim_sum
+                    self.stackbuttons[i]["text"] = self.stack[i]
+                    if self.stack[i] == 0:
+                        self.stackbuttons[i]["state"]=DISABLED
+                    break
+
         print("im a robot weeeee")
 
     def print_turn(self):
