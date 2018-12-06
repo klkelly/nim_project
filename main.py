@@ -8,13 +8,10 @@ class Nim(Frame):
     def __init__(self, master=None):
         self.callconstructor(master) # calls the constructor for the parent class
         self.master = master
-        #grid = place in the grid, make it stretch to the user's setting
         self.grid(sticky=N+S+E+W)
-        self.mode = 0
-        self.stacks_mode = 0
-        self.stacks = []
+        self.CPUplayer = 0
+        self.misere = 0
         self.mode_labels = ["1vCPU", "1v1"]
-        self.stacks_labels = ["3", "4", "5", "6", "7"]
         self.game = game(self)
         self.start = start(self)
         self.mainmenu()
@@ -25,13 +22,13 @@ class Nim(Frame):
 
     def classic_set(self):
         self.mode
+
     def mode_set(self, var):
         self.mode = var
         self.player_modeLabel = Label(self, text=self.mode_labels[self.mode])
 
     def rules(self):
         print("rules")
-        pass
 
     def stack_set(self, var):
         self.stacks_mode = var
@@ -59,28 +56,60 @@ class start(Nim):
     def make_widgets(self):
         # A window set up with a title, and buttons that will change options, plus a 'start game' option.
         # Title will be Nim; buttons will be pretty self-evident.
-        self.vCPUbutton = Button(self, cursor = "hand2", text="1vCPU", command = self.master.mode_set(0))
-        self.vPbutton = Button(self, cursor = "hand2", text="1v1", command = self.master.mode_set(1))
-        self.playersLabel = Label(self, text = "Players:")
+        # settings frame
+
+        self.sett = LabelFrame(self,text="settings",labelanchor="n")
+
+        self.sett.empty = Frame(self.sett,width=20) #spacer
+        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = self.mode_CPU)
+        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = self.mode_PVP)
+        self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = self.misere)
+        self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = self.normal)
+        
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
-        self.stacksLabel = Label(self, text = "Stacks:")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.stacks3Button = Button(self, cursor = "hand2", text ="Classic", command = self.master.classic_set)
-        self.player_modeLabel = Label(self, text=self.master.mode_labels[self.master.mode])
-        self.stacks_modeLabel = Label(self, text=self.master.stacks_labels[self.master.stacks_mode])
-        self.playersLabel.grid(column=0, row=1)
-        self.stacksLabel.grid(column=1, row=1)
-        self.vCPUbutton.grid(column=0, row=2)
-        self.vPbutton.grid(column=0, row=3)
-        self.rulesButton.grid(column=0, row=5)
-        self.startButton.grid(column=4, row=5)
-        self.quitButton.grid(column=4, row=6)
-        self.stacks3Button.grid(column=1, row=2)
-        self.player_modeLabel.grid(column=4, row=2)
-        self.stacks_modeLabel.grid(column=4, row=3)
-        self.welcomeLabel.grid(column=2, row=0,columnspan=2,sticky=E+W,ipady=10)
+        self.welcomeLabel.grid(column=0, row=0, columnspan=3,sticky=N+W+E+S)
+
+        self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,ipadx=10,ipady=10,padx=10,pady=10)
+
+        self.sett.vCPUbutton.grid(column=0, row=0,sticky=N+W+E+S)
+        self.sett.vPbutton.grid(column=1, row=0,sticky=N+W+E+S)
+        self.sett.empty.grid(column=2,row=0,sticky=N+W+E+S)
+        self.sett.mButton.grid(column=3,row=0,sticky=N+W+E+S)
+        self.sett.nButton.grid(column=4,row=0,sticky=N+W+E+S)
+
+        self.rulesButton.grid(column=0, row=5,sticky=N+W+E+S)
+        self.startButton.grid(column=1, row=5,sticky=N+W+E+S)
+        self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
+
+
+    def mode_CPU(self):
+        self.master.CPUplayer = 1
+        self.sett.vCPUbutton["state"]=DISABLED
+        self.sett.vPbutton["state"]=NORMAL
+        #self.player_modeLabel.grid(column=4, row=2)        
+
+    def mode_PVP(self):
+        self.master.CPUplayer = 0
+        self.sett.vCPUbutton["state"]=NORMAL
+        self.sett.vPbutton["state"]=DISABLED
+        print("1v1")
+        #self.player_modeLabel.grid(column=4, row=2)
+
+    def misere(self):
+        print("misere")
+        self.master.misere= 1
+        self.sett.mButton["state"]=DISABLED
+        self.sett.nButton["state"]=NORMAL
+
+    def normal(self):
+        print("normal")
+        self.master.misere=0
+        self.sett.mButton["state"]=NORMAL
+        self.sett.nButton["state"]=DISABLED
+
     def quit(self):
         super().quit()
 
