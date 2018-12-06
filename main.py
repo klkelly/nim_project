@@ -230,7 +230,7 @@ class game(Nim):
         nim_sum = 0
         for i in range(len(self.stack)):
             nim_sum = nim_sum^self.stack[i]
-        if nim_sum == 0:
+        if nim_sum == 0 + self.misere:
             ran1 = randint(0,len(self.stack)-1)
             while not self.stack[ran1]:
                 ran1 = randint(0,len(self.stack)-1)
