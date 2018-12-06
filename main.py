@@ -25,22 +25,10 @@ class Nim(Frame):
         
         self.start.grid(sticky=N+S+E+W)
 
-    def classic_set(self):
-        self.mode
-
-    def mode_set(self, var):
-        self.mode = var
-        self.player_modeLabel = Label(self, text=self.mode_labels[self.mode])
-
     def rules(self):
         self.game.grid_remove()
         self.start.grid_remove()
         self.instructions.grid(sticky=N+S+E+W)
-
-    def stack_set(self, var):
-        self.stacks_mode = var
-        self.stacks_modeLabel = Label(self, text=self.stacks_labels[self.stacks_mode])
-        print (var)
 
     def play(self):
         print("play")
@@ -48,8 +36,9 @@ class Nim(Frame):
         self.start.grid_remove()
         self.instructions.grid_remove()
         #makes the game appear
+        #create a new game
+        self.game = game(self)
         self.game.grid(sticky=N+S+E+W)
-
 
     def quit(self):
         print("quitting")
@@ -96,8 +85,11 @@ class start(Nim):
 
 
     def mode_CPU(self, var):
+        # assign value to the attribute
         self.master.CPUplayer = var
-        if self.master.CPUplayer == 0:
+        # if cpu player is activated
+        if self.master.CPUplayer:
+            #you cant click on the cpu button again
             self.sett.vCPUbutton["state"]=DISABLED
             self.sett.vPbutton["state"]=NORMAL
         else:
@@ -123,6 +115,7 @@ class game(Nim):
         self.master = master # master is gonna be the instance of nim
         self.turn = 1
         self.make_widgets()
+        self.stack_selected= None
         if self.master.mode == "classic":
             self.stack = [1,3,5]
         else:
@@ -147,28 +140,37 @@ class game(Nim):
         for i in range(len(self.stack)):
             butt = Button(self.container,cursor = "hand2", disabledforeground= "#999",text = self.stack[i],command= lambda a=i: self.remove_one(a))
             self.stackbuttons.append(butt)
-            self.stackbuttons[i].grid(column=i,row= 0)
+            self.stackbuttons[i].grid(column=i,row= 0,sticky = E+W)
 
     def remove_one(self,a):
-        if self.stack[a]>0:
-            self.stack[a] -= 1
-            self.stackbuttons[a]["text"] = self.stack[a]
-            # TODO make stackbuttons[a]["text"] change accordingly
-        if self.stack[a]==0:
-            self.stackbuttons[a]["state"]=DISABLED
-        self.check_win()
+        if self.stack_selected == a or self.stack_selected == None:
+            self.stack_selected = a
+            if self.stack[a]>0:
+                self.stack[a] -= 1
+                self.stackbuttons[a]["text"]=self.stack[a]
+            if self.stack[a]==0:
+                self.stackbuttons[a]["state"]=DISABLED
+            self.check_win()
+        else:
+            print("you cant select two different stacks bitch")
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
             self.nextButton["state"]=DISABLED
+            #if in mesere version, the last person to get an item, loses
             if self.master.misere:
+                #player 1 had the last turn
                 if self.turn:
-                    self.turnLabel["text"] = "Player 1 loses!"
+                    self.turnLabel["text"] = "Player 2 wins!"
+                #player 2 had the last turn
                 else:
-                    self.turnLabel["text"] = "Player 2 loses!"
+                    self.turnLabel["text"] = "Player 1 wins!"
+            # in normal version, the last to get an item wins
             else:
+                #player 1 had the last turn
                 if self.turn:
                     self.turnLabel["text"] = "Player 1 wins!"
+                #player 2 had the last turn
                 else:
                     self.turnLabel["text"] = "Player 2 wins!"
 
@@ -176,10 +178,13 @@ class game(Nim):
     def next_turn(self):
         self.turn = not self.turn
         self.turnLabel["text"]= self.print_turn()
+        self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
         else:
             pass
+        self.check_win()
+
 
 
 
