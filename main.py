@@ -210,10 +210,11 @@ class game(Nim):
         self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
-            self.turn = not self.turn
-            self.turnLabel["text"]= self.print_turn()
-            self.stack_selected = None
-        self.check_win()
+            self.check_win()
+            if self.gameOver == 0:
+                self.turn = not self.turn
+                self.turnLabel["text"]= self.print_turn()
+                self.stack_selected = None
 
 
 # algorithm goes here
@@ -410,7 +411,7 @@ class game(Nim):
             # in normal version, the last to get an item wins
             else:
                 #player 1 had the last turn
-                if not self.lastPlay:
+                if self.lastPlay:
                     self.turnLabel["text"] = "Player 1 wins!"
                 #player 2 had the last turn
                 else:
