@@ -151,6 +151,8 @@ class game(Nim):
             self.stack = [1,3,5]
         else:
             self.stack = [1,1,1]
+        self.gameOver = 0
+        self.lastPlay = 0
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
@@ -187,6 +189,9 @@ class game(Nim):
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
+            if self.gameOver = 0:
+                self.lastPlay = self.turn
+            self.gameOver = 1
             self.nextButton["state"]=DISABLED
             #if in mesere version, the last person to get an item, loses
             if self.master.misere:
@@ -233,23 +238,96 @@ class game(Nim):
         nim_sum = 0
         for i in range(len(self.stack)):
             nim_sum = nim_sum^self.stack[i]
-        if nim_sum == 0 + self.misere:
-            ran1 = randint(0,len(self.stack)-1)
-            while not self.stack[ran1]:
-                ran1 = randint(0,len(self.stack)-1)
-            ran2 = randint(1,self.stack[ran1])
-            self.stack[ran1] -= ran2
-            self.stackbuttons[ran1]["text"] = self.stack[ran1]
-            if self.stack[ran1] == 0:
-                self.stack[ran1]["state"]=DISABLED
+        if self.master.misere:
+            stacks_left = 0
+            big_stacks = 0
+            for i in self.stack:
+                if i > 0:
+                    stacks_left += 1
+                if i > 1:
+                    big_stacks += 1
+            if stacks_left % 2:
+                if big_stacks == 1:
+                    for i in range(len(self.stack)):
+                        if self.stack[i] > 1:
+                            self.stack[i] = 1
+                            self.stackbuttons[i]["text"] = self.stack[i]
+                            if self.stack[i] == 0:
+                                self.stackbuttons[i]["state"]=DISABLED
+                            break
+                elif big_stacks > 1:
+                    for i in range(len(self.stack)):
+                        if self.stack[i]^nim_sum < self.stack[i]:
+                            self.stack[i] = self.stack[i]^nim_sum
+                            self.stackbuttons[i]["text"] = self.stack[i]
+                            if self.stack[i] == 0:
+                                self.stackbuttons[i]["state"]=DISABLED
+                            break
+                else:
+                    ran1 = randint(0,len(self.stack)-1)
+                    while not self.stack[ran1]:
+                        ran1 = randint(0,len(self.stack)-1)
+                    ran2 = randint(1,self.stack[ran1])
+                    self.stack[ran1] -= ran2
+                    self.stackbuttons[ran1]["text"] = self.stack[ran1]
+                    if self.stack[ran1] == 0:
+                        self.stackbuttons[ran1]["state"]=DISABLED
+            else:
+                if big_stacks == 1:
+                    for i in range(len(self.stack)):
+                        if self.stack[i] > 1:
+                            self.stack[i] = 0
+                            self.stackbuttons[i]["text"] = self.stack[i]
+                            if self.stack[i] == 0:
+                                self.stackbuttons[i]["state"]=DISABLED
+                            break
+                elif big_stacks == 0:
+                    for i in range(len(self.stack)):
+                        if self.stack[i] > 0:
+                            self.stack[i] = 0
+                            self.stackbuttons[i]["text"] = self.stack[i]
+                            if self.stack[i] == 0:
+                                self.stackbuttons[i]["state"]=DISABLED
+                            break
+                else:
+                    if nim_sum == 0:
+                        ran1 = randint(0,len(self.stack)-1)
+                        while not self.stack[ran1]:
+                            ran1 = randint(0,len(self.stack)-1)
+                        ran2 = randint(1,self.stack[ran1])
+                        self.stack[ran1] -= ran2
+                        self.stackbuttons[ran1]["text"] = self.stack[ran1]
+                        if self.stack[ran1] == 0:
+                            self.stackbuttons[ran1]["state"]=DISABLED
+
+                    else:
+                        for i in range(len(self.stack)):
+                            if self.stack[i]^nim_sum < self.stack[i]:
+                                self.stack[i] = self.stack[i]^nim_sum
+                                self.stackbuttons[i]["text"] = self.stack[i]
+                                if self.stack[i] == 0:
+                                    self.stackbuttons[i]["state"]=DISABLED
+                                break
+
         else:
-            for i in range(len(self.stack)):
-                if self.stack[i]^nim_sum < self.stack[i]:
-                    self.stack[i] = self.stack[i]^nim_sum
-                    self.stackbuttons[i]["text"] = self.stack[i]
-                    if self.stack[i] == 0:
-                        self.stackbuttons[i]["state"]=DISABLED
-                    break
+            if nim_sum == 0:
+                ran1 = randint(0,len(self.stack)-1)
+                while not self.stack[ran1]:
+                    ran1 = randint(0,len(self.stack)-1)
+                ran2 = randint(1,self.stack[ran1])
+                self.stack[ran1] -= ran2
+                self.stackbuttons[ran1]["text"] = self.stack[ran1]
+                if self.stack[ran1] == 0:
+                    self.stackbuttons[ran1]["state"]=DISABLED
+            else:
+                for i in range(len(self.stack)):
+                    if self.stack[i]^nim_sum < self.stack[i]:
+                        self.stack[i] = self.stack[i]^nim_sum
+                        self.stackbuttons[i]["text"] = self.stack[i]
+                        if self.stack[i] == 0:
+                            self.stackbuttons[i]["state"]=DISABLED
+                        break
+
 
         print("im a robot weeeee")
 
