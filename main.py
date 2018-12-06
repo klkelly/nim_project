@@ -16,13 +16,14 @@ class Nim(Frame):
         self.mode = "classic"
         self.game = game(self)
         self.start = start(self)
+        self.diy = diy(self)
         self.instructions = instructions(self)
         self.mainmenu()
 
     def mainmenu(self):
         self.game.grid_remove()
         self.instructions.grid_remove()
-        
+        self.diy.grid_remove()
         self.start.grid(sticky=N+S+E+W)
 
     def rules(self):
@@ -30,10 +31,17 @@ class Nim(Frame):
         self.start.grid_remove()
         self.instructions.grid(sticky=N+S+E+W)
 
+    def custom(self):
+        self.game.grid_remove()
+        self.start.grid_remove()
+        self.instructions.grid_remove()
+        self.diy.grid(sticky=N+S+E+W)
+
     def play(self):
         print("play")
         #makes the start menu dissapear, but it is not deleted
         self.start.grid_remove()
+        self.diy.grid_remove()
         self.instructions.grid_remove()
         #makes the game appear
         #create a new game
@@ -64,20 +72,25 @@ class start(Nim):
         self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(0))
         self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
         self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
-        
+        self.sett.clButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="classic", command = lambda: self.change_mode(0))
+        self.sett.grButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="greedy", command = lambda: self.change_mode(1))
+        self.sett.cuButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="custom", command =self.master.custom)
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.welcomeLabel.grid(column=0, row=0, columnspan=3,sticky=N+W+E+S)
 
-        self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,ipadx=10,ipady=10,padx=10,pady=10)
+        self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,padx=10,pady=10)
 
         self.sett.vCPUbutton.grid(column=0, row=0,sticky=N+W+E+S)
         self.sett.vPbutton.grid(column=1, row=0,sticky=N+W+E+S)
         self.sett.empty.grid(column=2,row=0,sticky=N+W+E+S)
         self.sett.mButton.grid(column=3,row=0,sticky=N+W+E+S)
         self.sett.nButton.grid(column=4,row=0,sticky=N+W+E+S)
+        self.sett.clButton.grid(column= 1, row=1,sticky=N+W+E+S)
+        self.sett.grButton.grid(column= 2, row=1,sticky=N+W+E+S)
+        self.sett.cuButton.grid(column= 3, row=1,sticky=N+W+E+S)
 
         self.rulesButton.grid(column=0, row=5,sticky=N+W+E+S)
         self.startButton.grid(column=1, row=5,sticky=N+W+E+S)
@@ -99,12 +112,29 @@ class start(Nim):
 
     def misere(self, var):
         self.master.misere = var
-        if self.master.misere == 1:
+        if self.master.misere:
             self.sett.mButton["state"]=DISABLED
             self.sett.nButton["state"]=NORMAL
         else:
             self.sett.mButton["state"]=NORMAL
             self.sett.nButton["state"]=DISABLED
+
+    def change_mode(self,var):
+        if var == 0:
+            self.master.mode = "classic"
+            self.sett.clButton["state"]=DISABLED
+            self.sett.grButton["state"]=NORMAL
+            self.sett.cuButton["state"]=NORMAL
+        elif var == 1:
+            self.master.mode = "greedy"
+            self.sett.grButton["state"]=DISABLED
+            self.sett.clButton["state"]=NORMAL
+            self.sett.cuButton["state"]=NORMAL
+        elif var == 2:
+            self.master.mode = "custom"
+            self.sett.cuButton["state"]=DISABLED
+            self.sett.grButton["state"]=NORMAL
+            self.sett.clButton["state"]=NORMAL
 
     def quit(self):
         super().quit()
@@ -130,10 +160,10 @@ class game(Nim):
         self.container = LabelFrame(self, text = "Click to remove one from any stack",labelanchor ="n")
         self.container.grid(column = 0, row = 1, columnspan=3)
         self.stackbuttons=[]
-        self.menuButton.grid(column = 2, row = 3)
-        self.quitButton.grid(column = 3,row=3)
-        self.nextButton.grid(column=2,row=2)
-        self.turnLabel.grid(column=3, row= 0)
+        self.menuButton.grid(column = 0, row = 3)
+        self.quitButton.grid(column = 2,row=3)
+        self.nextButton.grid(column=1,row=2)
+        self.turnLabel.grid(column=2, row= 0)
         if self.master.mode == "classic":
             self.stack = [1,3,5]
         else:
@@ -178,14 +208,18 @@ class game(Nim):
 
 
     def next_turn(self):
+        # do nothing if the player has not clicked on a stack yet
+        if self.stack_selected == None:
+            print("you must click on some stack before your turn ends")
+            return
         self.turn = not self.turn
         self.turnLabel["text"]= self.print_turn()
         self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
+            self.check_win()
         else:
-            pass
-        self.check_win()
+            self.check_win()
 
 
 
@@ -224,6 +258,19 @@ class instructions(Nim):
         self.rulesText.grid(column=0, row=0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+    def quit(self):
+        super().quit()
+
+class diy(Nim):
+    def __init__(self,master=None):
+        super().callconstructor(master) # We call the frame constructor
+        self.master = master
+        self.make_widgets()
+    def make_widgets(self):
+        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
+        self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
+        self.menuButton.grid(column=0, row=1)
+        self.quitButton.grid(column=0, row=2)
     def quit(self):
         super().quit()
 
