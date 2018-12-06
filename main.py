@@ -176,6 +176,10 @@ class game(Nim):
             self.stackbuttons[i].grid(column=i,row= 0,sticky = E+W)
 
     def remove_one(self,a):
+        if self.master.mode =="greedy" and self.stack_selected == None:
+            if any([i>self.stack[a] for i in self.stack]):
+                print ("you must select from the biggest pile(s)")
+                return
         if self.stack_selected == a or self.stack_selected == None:
             self.stack_selected = a
             if self.stack[a]>0:
