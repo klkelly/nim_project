@@ -175,12 +175,13 @@ class game(Nim):
 
 
     def next_turn(self):
-        self.turn = not self.turn
-        self.turnLabel["text"]= self.print_turn()
-        if self.master.CPUplayer:
-            self.cpu_turn()
-        else:
-            pass
+        if self.gameOver == 0:
+            self.turn = not self.turn
+            self.turnLabel["text"]= self.print_turn()
+            if self.master.CPUplayer:
+                self.cpu_turn()
+            else:
+                pass
 
 
 
