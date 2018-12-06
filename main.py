@@ -211,10 +211,11 @@ class game(Nim):
         self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
-            self.turn = not self.turn
-            self.turnLabel["text"]= self.print_turn()
-            self.stack_selected = None
-        self.check_win()
+            self.check_win()
+            if self.gameOver == 0:
+                self.turn = not self.turn
+                self.turnLabel["text"]= self.print_turn()
+                self.stack_selected = None
 
 
 # algorithm goes here
