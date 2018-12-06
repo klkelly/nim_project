@@ -183,7 +183,7 @@ class game(Nim):
                 self.stackbuttons[a]["state"]=DISABLED
             self.check_win()
         else:
-            print("you cant select two different stacks bitch")
+            print("you cant select two different stacks")
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
@@ -222,6 +222,9 @@ class game(Nim):
         self.stack_selected = None
         if self.master.CPUplayer:
             self.cpu_turn()
+            self.turn = not self.turn
+            self.turnLabel["text"]= self.print_turn()
+            self.stack_selected = None
         self.check_win()
 
 
