@@ -125,6 +125,7 @@ class start(Nim):
     def change_mode(self,var):
         if var == 0:
             self.master.mode = "classic"
+            self.master.stacknum = 3
             self.sett.clButton["state"]=DISABLED
             self.sett.grButton["state"]=NORMAL
             self.sett.cuButton["state"]=NORMAL
