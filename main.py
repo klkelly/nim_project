@@ -139,8 +139,20 @@ class instructions(Nim):
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.menuButton.grid()
-        self.quitButton.grid()
+        self.rulesText = Text(self, width=50, height=20, wrap="word")
+        self.rulesText.insert('1.0', ('From Wikipedia: Nim is a mathematical game of strategy in which two players take '
+            'turns removing objects from distinct heaps or piles. On each turn, a player must remove at least one object'
+            ', and may remove any number of objects provided they all come from the same heap/pile. The goal of the game'
+            ' is to be the player who removes the last object.\n\nIn our implementation of this game, players will take'
+            ' turns removing objects from what we have called "stacks". There are two modes of play:\n  In Misere-mode, t'
+            'he object of the game is to avoid taking the last object from the last remaining stack. Taking the last obj'
+            'ect will result in the player losing the game!\n  In Normal-mode, the player who takes the last object from'
+            'the last stack wins!'))
+        self.menuButton.grid(column=0, row=1)
+        self.quitButton.grid(column=0, row=2)
+        self.rulesText.grid(column=0, row=0)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
     def quit(self):
         super().quit()
 
