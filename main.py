@@ -8,16 +8,20 @@ class Nim(Frame):
     def __init__(self, master=None):
         self.callconstructor(master) # calls the constructor for the parent class
         self.master = master
+        top= self.winfo_toplevel()
+        top.title("Game of Nim By Keven and Rafa")
         self.grid(sticky=N+S+E+W)
         self.CPUplayer = 0
         self.misere = 0
         self.mode_labels = ["1vCPU", "1v1"]
         self.game = game(self)
         self.start = start(self)
+        self.instructions = instructions(self)
         self.mainmenu()
 
     def mainmenu(self):
         self.game.grid_remove()
+        self.instructions.grid_remove()
         self.start.grid(sticky=N+S+E+W)
 
     def classic_set(self):
@@ -28,7 +32,9 @@ class Nim(Frame):
         self.player_modeLabel = Label(self, text=self.mode_labels[self.mode])
 
     def rules(self):
-        print("rules")
+        self.game.grid_remove()
+        self.start.grid_remove()
+        self.instructions.grid(sticky=N+S+E+W)
 
     def stack_set(self, var):
         self.stacks_mode = var
@@ -37,7 +43,10 @@ class Nim(Frame):
 
     def play(self):
         print("play")
+        #makes the start menu dissapear, but it is not deleted
         self.start.grid_remove()
+        self.instructions.grid_remove()
+        #makes the game appear
         self.game.grid(sticky=N+S+E+W)
 
 
@@ -128,6 +137,18 @@ class game(Nim):
     def quit(self):
         super().quit()
 
+class instructions(Nim):
+    def __init__(self,master=None):
+        super().callconstructor(master) # We call the frame constructor
+        self.master = master
+        self.make_widgets()
+    def make_widgets(self):
+        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
+        self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
+        self.menuButton.grid()
+        self.quitButton.grid()
+    def quit(self):
+        super().quit()
 
 if __name__ == "__main__":
     root = Tk()
