@@ -123,6 +123,11 @@ class game(Nim):
         self.master = master # master is gonna be the instance of nim
         self.turn = 1
         self.make_widgets()
+        if self.master.mode == "classic":
+            self.stack = [1,3,5]
+        else:
+            self.stack = [1,1,1]
+        self.gameOver = 0
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
@@ -156,7 +161,17 @@ class game(Nim):
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
-            pass
+            self.gameOver = 1
+            if self.master.misere:
+                if self.turn:
+                    self.turnLabel["text"] = "Player 1 loses!"
+                else:
+                    self.turnLabel["text"] = "Player 2 loses!"
+            else:
+                if self.turn:
+                    self.turnLabel["text"] = "Player 1 wins!"
+                else:
+                    self.turnLabel["text"] = "Player 2 wins!"
 
 
     def next_turn(self):
