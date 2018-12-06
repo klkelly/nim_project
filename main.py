@@ -15,7 +15,7 @@ class Nim(Frame):
         self.CPUplayer = 0
         self.misere = 0
         self.mode = "classic"
-        self.stack=[3,4,5]
+        self.stacknum = 3
         self.game = game(self)
         self.start = start(self)
         self.diy = diy(self)
@@ -47,7 +47,6 @@ class Nim(Frame):
         self.instructions.grid_remove()
         #makes the game appear
         #create a new game
-        print(self.stack)
         self.game = game(self)
         self.game.grid(sticky=N+S+E+W)
 
@@ -152,6 +151,10 @@ class game(Nim):
         self.stack = self.master.stack
         self.gameOver = 0
         self.lastPlay = 0
+        self.stack = []
+        for i in range(self.master.stacknum):
+            x = randint(1,9)
+            self.stack.append(x)
         self.make_widgets()
         self.stack_selected= None
 
@@ -410,12 +413,7 @@ class diy(Nim):
         self.sett.grButton.grid(column=7,row=1)
 
     def change_stack(self,num):
-        number= self.stacknum.get()
-        self.master.stack =[]
-        #randomly populates the stacks
-        for i in range(number):
-            x = randint(1,9)
-            self.master.stack.append(x)
+        self.master.stacknum = self.stacknum.get()
 
     def mode_CPU(self, var):
         # assign value to the attribute
