@@ -13,7 +13,7 @@ class Nim(Frame):
         self.grid(sticky=N+S+E+W)
         self.CPUplayer = 0
         self.misere = 0
-        self.mode_labels = ["1vCPU", "1v1"]
+        self.mode = "classic"
         self.game = game(self)
         self.start = start(self)
         self.instructions = instructions(self)
@@ -22,6 +22,7 @@ class Nim(Frame):
     def mainmenu(self):
         self.game.grid_remove()
         self.instructions.grid_remove()
+        
         self.start.grid(sticky=N+S+E+W)
 
     def classic_set(self):
@@ -67,7 +68,7 @@ class start(Nim):
         # Title will be Nim; buttons will be pretty self-evident.
         # settings frame
 
-        self.sett = LabelFrame(self,text="settings",labelanchor="n")
+        self.sett = LabelFrame(self,text="Settings",labelanchor="n")
 
         self.sett.empty = Frame(self.sett,width=20) #spacer
         self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = self.mode_CPU)
@@ -126,14 +127,61 @@ class game(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the frame constructor
         self.master = master # master is gonna be the instance of nim
-        self.width = 3500
-        self.height = 2000
+        self.turn = 1
         self.make_widgets()
+
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.menuButton.grid()
-        self.quitButton.grid()
+        self.nextButton = Button(self, cursor = "hand2", text="Finish your turn", command=self.next_turn)
+        self.turnLabel = Label(self, text = self.print_turn())
+        self.container = LabelFrame(self, text = "Click to remove one from any stack",labelanchor ="n")
+        self.container.grid(column = 0, row = 1, columnspan=3)
+        self.stackbuttons=[]
+        self.menuButton.grid(column = 2, row = 3)
+        self.quitButton.grid(column = 3,row=3)
+        self.nextButton.grid(column=2,row=2)
+        self.turnLabel.grid(column=3, row= 0)
+        if self.master.mode == "classic":
+            self.stack = [1,3,5]
+        else:
+            self.stack = [1,1,1]
+        for i in range(len(self.stack)):
+            butt = Button(self.container,cursor = "hand2", disabledforeground= "#999",text = self.stack[i],command= lambda a=i: self.remove_one(a))
+            self.stackbuttons.append(butt)
+            self.stackbuttons[i].grid(column=i,row= 0)
+
+    def remove_one(self,a):
+        if self.stack[a]>0:
+            self.stack[a] -= 1
+            # TODO make stackbuttons[a]["text"] change accordingly
+        if self.stack[a]==0:
+            self.stackbuttons[a]["state"]=DISABLED
+        self.check_win()
+    
+    def check_win(self):
+        pass
+
+    def next_turn(self):
+        self.turn = not self.turn
+        self.turnLabel["text"]= self.print_turn()
+        if self.master.CPUplayer:
+            self.cpu_turn()
+        else:
+            pass
+
+
+
+# algorithm goes here
+    def cpu_turn(self):
+        print("im a robot weeeee")
+
+    def print_turn(self):
+        if self.turn:
+            return("Player 1's turn")
+        else:
+            return("Player 2's turn")
+
     def quit(self):
         super().quit()
 
