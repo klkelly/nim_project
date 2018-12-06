@@ -61,10 +61,10 @@ class start(Nim):
         self.sett = LabelFrame(self,text="settings",labelanchor="n")
 
         self.sett.empty = Frame(self.sett,width=20) #spacer
-        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = self.mode_CPU)
-        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = self.mode_PVP)
-        self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = self.misere)
-        self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = self.normal)
+        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(0))
+        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(1))
+        self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
+        self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
         
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
@@ -85,30 +85,24 @@ class start(Nim):
         self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
 
 
-    def mode_CPU(self):
-        self.master.CPUplayer = 1
-        self.sett.vCPUbutton["state"]=DISABLED
-        self.sett.vPbutton["state"]=NORMAL
-        #self.player_modeLabel.grid(column=4, row=2)        
+    def mode_CPU(self, var):
+        self.master.CPUplayer = var
+        if self.master.CPUplayer == 0:
+            self.sett.vCPUbutton["state"]=DISABLED
+            self.sett.vPbutton["state"]=NORMAL
+        else:
+            self.sett.vCPUbutton["state"]=NORMAL
+            self.sett.vPbutton["state"]=DISABLED
 
-    def mode_PVP(self):
-        self.master.CPUplayer = 0
-        self.sett.vCPUbutton["state"]=NORMAL
-        self.sett.vPbutton["state"]=DISABLED
-        print("1v1")
-        #self.player_modeLabel.grid(column=4, row=2)
 
-    def misere(self):
-        print("misere")
-        self.master.misere= 1
-        self.sett.mButton["state"]=DISABLED
-        self.sett.nButton["state"]=NORMAL
-
-    def normal(self):
-        print("normal")
-        self.master.misere=0
-        self.sett.mButton["state"]=NORMAL
-        self.sett.nButton["state"]=DISABLED
+    def misere(self, var):
+        self.master.misere = var
+        if self.master.misere == 1:
+            self.sett.mButton["state"]=DISABLED
+            self.sett.nButton["state"]=NORMAL
+        else:
+            self.sett.mButton["state"]=NORMAL
+            self.sett.nButton["state"]=DISABLED
 
     def quit(self):
         super().quit()
