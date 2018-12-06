@@ -330,7 +330,7 @@ class game(Nim):
                     if i == max_no_maxes:
                         num_no_max += 1
             if num_max == 1:
-                if num_no_max % 2 or if not num_no_max % 2 and self.master.misere == 0:
+                if num_no_max % 2 or not num_no_max % 2 and self.master.misere == 0:
                     for i in range(len(self.stack)):
                         if self.stack[i] == maxstack:
                             self.stack[i] = max_no_maxes
