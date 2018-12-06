@@ -127,7 +127,6 @@ class game(Nim):
             self.stack = [1,3,5]
         else:
             self.stack = [1,1,1]
-        self.gameOver = 0
 
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
@@ -161,7 +160,7 @@ class game(Nim):
     
     def check_win(self):
         if all([ i==0 for i in self.stack]):
-            self.gameOver = 1
+            self.nextButton["state"]=DISABLED
             if self.master.misere:
                 if self.turn:
                     self.turnLabel["text"] = "Player 1 loses!"
@@ -175,18 +174,18 @@ class game(Nim):
 
 
     def next_turn(self):
-        if self.gameOver == 0:
-            self.turn = not self.turn
-            self.turnLabel["text"]= self.print_turn()
-            if self.master.CPUplayer:
-                self.cpu_turn()
-            else:
-                pass
+        self.turn = not self.turn
+        self.turnLabel["text"]= self.print_turn()
+        if self.master.CPUplayer:
+            self.cpu_turn()
+        else:
+            pass
 
 
 
 # algorithm goes here
     def cpu_turn(self):
+        
         print("im a robot weeeee")
 
     def print_turn(self):
