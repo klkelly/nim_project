@@ -16,12 +16,15 @@ class Nim(Frame):
         self.mode_labels = ["1vCPU", "1v1"]
         self.stacks_labels = ["3", "4", "5", "6", "7"]
         self.game = game(self)
-        self.start()
-    def start(self):
-        self.game.grid_remove()
         self.start = start(self)
+        self.mainmenu()
+
+    def mainmenu(self):
+        self.game.grid_remove()
         self.start.grid(sticky=N+S+E+W)
 
+    def classic_set(self):
+        self.mode
     def mode_set(self, var):
         self.mode = var
         self.player_modeLabel = Label(self, text=self.mode_labels[self.mode])
@@ -64,14 +67,9 @@ class start(Nim):
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.stacks3Button = Button(self, cursor = "hand2", text ="3", command = self.master.stack_set(0))
-        self.stacks4Button = Button(self, cursor = "hand2", text ="4", command = self.master.stack_set(1))
-        self.stacks5Button = Button(self, cursor = "hand2", text ="5", command = self.master.stack_set(2))
-        self.stacks6Button = Button(self, cursor = "hand2", text ="6", command = self.master.stack_set(3))
-        self.stacks7Button = Button(self, cursor = "hand2", text ="7", command = self.master.stack_set(4))
+        self.stacks3Button = Button(self, cursor = "hand2", text ="Classic", command = self.master.classic_set)
         self.player_modeLabel = Label(self, text=self.master.mode_labels[self.master.mode])
         self.stacks_modeLabel = Label(self, text=self.master.stacks_labels[self.master.stacks_mode])
-        self.welcomeLabel.grid(column=0, row=0, columnspan=2)
         self.playersLabel.grid(column=0, row=1)
         self.stacksLabel.grid(column=1, row=1)
         self.vCPUbutton.grid(column=0, row=2)
@@ -80,12 +78,9 @@ class start(Nim):
         self.startButton.grid(column=4, row=5)
         self.quitButton.grid(column=4, row=6)
         self.stacks3Button.grid(column=1, row=2)
-        self.stacks4Button.grid(column=1, row=3)
-        self.stacks5Button.grid(column=1, row=4)
-        self.stacks6Button.grid(column=1, row=5)
-        self.stacks7Button.grid(column=1, row=6)
         self.player_modeLabel.grid(column=4, row=2)
         self.stacks_modeLabel.grid(column=4, row=3)
+        self.welcomeLabel.grid(column=2, row=0,columnspan=2,sticky=E+W,ipady=10)
     def quit(self):
         super().quit()
 
@@ -97,7 +92,7 @@ class game(Nim):
         self.height = 2000
         self.make_widgets()
     def make_widgets(self):
-        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.start, fg="green")
+        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.menuButton.grid()
         self.quitButton.grid()
