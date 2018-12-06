@@ -162,18 +162,28 @@ class game(Nim):
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.nextButton = Button(self, cursor = "hand2", text="Finish your turn", command=self.next_turn)
         self.turnLabel = Label(self, text = self.print_turn())
+        self.gameLabel = Label(self, text = self.game_tag(),fg = "#999")
         self.container = LabelFrame(self, text = "Click to remove one from any stack",labelanchor ="n")
         self.container.grid(column = 0, row = 1, columnspan=3)
         self.stackbuttons=[]
         self.menuButton.grid(column = 0, row = 3)
         self.quitButton.grid(column = 2,row=3)
         self.nextButton.grid(column=1,row=2)
+        self.gameLabel.grid(column = 0,row= 0)
         self.turnLabel.grid(column=2, row= 0)
 
         for i in range(len(self.stack)):
             butt = Button(self.container,cursor = "hand2", disabledforeground= "#999",text = self.stack[i],command= lambda a=i: self.remove_one(a))
             self.stackbuttons.append(butt)
             self.stackbuttons[i].grid(column=i,row= 0,sticky = E+W)
+
+    def game_tag(self):
+        tag = str(self.master.mode)
+        if self.master.misere:
+            tag +=" misere"
+        else:
+            tag +=" normal"
+        return (tag)
 
     def remove_one(self,a):
         if self.master.mode =="greedy" and self.stack_selected == None:
