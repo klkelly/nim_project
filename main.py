@@ -71,10 +71,10 @@ class start(Nim):
         self.sett = LabelFrame(self,text="Settings",labelanchor="n")
 
         self.sett.empty = Frame(self.sett,width=20) #spacer
-        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = self.mode_CPU)
-        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = self.mode_PVP)
-        self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = self.misere)
-        self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = self.normal)
+        self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(0))
+        self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(1))
+        self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
+        self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
         
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
@@ -95,30 +95,24 @@ class start(Nim):
         self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
 
 
-    def mode_CPU(self):
-        self.master.CPUplayer = 1
-        self.sett.vCPUbutton["state"]=DISABLED
-        self.sett.vPbutton["state"]=NORMAL
-        #self.player_modeLabel.grid(column=4, row=2)        
+    def mode_CPU(self, var):
+        self.master.CPUplayer = var
+        if self.master.CPUplayer == 0:
+            self.sett.vCPUbutton["state"]=DISABLED
+            self.sett.vPbutton["state"]=NORMAL
+        else:
+            self.sett.vCPUbutton["state"]=NORMAL
+            self.sett.vPbutton["state"]=DISABLED
 
-    def mode_PVP(self):
-        self.master.CPUplayer = 0
-        self.sett.vCPUbutton["state"]=NORMAL
-        self.sett.vPbutton["state"]=DISABLED
-        print("1v1")
-        #self.player_modeLabel.grid(column=4, row=2)
 
-    def misere(self):
-        print("misere")
-        self.master.misere= 1
-        self.sett.mButton["state"]=DISABLED
-        self.sett.nButton["state"]=NORMAL
-
-    def normal(self):
-        print("normal")
-        self.master.misere=0
-        self.sett.mButton["state"]=NORMAL
-        self.sett.nButton["state"]=DISABLED
+    def misere(self, var):
+        self.master.misere = var
+        if self.master.misere == 1:
+            self.sett.mButton["state"]=DISABLED
+            self.sett.nButton["state"]=NORMAL
+        else:
+            self.sett.mButton["state"]=NORMAL
+            self.sett.nButton["state"]=DISABLED
 
     def quit(self):
         super().quit()
@@ -196,8 +190,20 @@ class instructions(Nim):
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.menuButton.grid()
-        self.quitButton.grid()
+        self.rulesText = Text(self, width=50, height=20, wrap="word")
+        self.rulesText.insert('1.0', ('From Wikipedia: Nim is a mathematical game of strategy in which two players take '
+            'turns removing objects from distinct heaps or piles. On each turn, a player must remove at least one object'
+            ', and may remove any number of objects provided they all come from the same heap/pile. The goal of the game'
+            ' is to be the player who removes the last object.\n\nIn our implementation of this game, players will take'
+            ' turns removing objects from what we have called "stacks". There are two modes of play:\n  In Misere-mode, t'
+            'he object of the game is to avoid taking the last object from the last remaining stack. Taking the last obj'
+            'ect will result in the player losing the game!\n  In Normal-mode, the player who takes the last object from'
+            'the last stack wins!'))
+        self.menuButton.grid(column=0, row=1)
+        self.quitButton.grid(column=0, row=2)
+        self.rulesText.grid(column=0, row=0)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
     def quit(self):
         super().quit()
 
