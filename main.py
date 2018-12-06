@@ -148,7 +148,6 @@ class game(Nim):
         super().callconstructor(master) # We call the frame constructor
         self.master = master # master is gonna be the instance of nim
         self.turn = 1
-        self.stack = self.master.stack
         self.gameOver = 0
         self.lastPlay = 0
         self.stack = []
@@ -192,11 +191,8 @@ class game(Nim):
         if all([ i==0 for i in self.stack]):
             if self.gameOver == 0:
                 self.lastPlay = self.turn
-                if not self.master.misere:
-                    self.turnLabel["text"] = self.print_turn()
             self.gameOver = 1
-            if not self.master.misere:
-                self.turnLabel["text"] = self.print_turn()
+            self.turnLabel["text"] = self.print_turn()
             self.nextButton["state"]=DISABLED
 
 
