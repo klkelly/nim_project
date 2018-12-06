@@ -160,7 +160,10 @@ class game(Nim):
         self.check_win()
     
     def check_win(self):
-        pass
+        if all(i == 0 for i in self.stack):
+            print ("someone won!")
+
+        
 
     def next_turn(self):
         self.turn = not self.turn
