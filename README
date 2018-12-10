@@ -15,11 +15,11 @@ NOTE: It is expected that running this software, the user has installed Python v
 
 The Game of Nim is a GUI implementation of a Nim game. For information about Nim, please see wikipedia: https://en.wikipedia.org/wiki/Nim
 
-The game itself is a mathematical strategy game, where two players attempt to remove objects from a pile (in our game, we call them 'stacks', because this is Computing Science, after all) and either attempt to be the person to take the last piece from the game, or to force the other player to be the one to take the last piece.
+The game itself is a mathematical strategy game, where two players attempt to remove objects from a pile (in our game, we call them 'stacks', because this is Computing Science, after all). They both attempt to be the person to take the last piece from the game, or to force the other player to be the one to take the last piece, depending on the game mode.
 
 The game runs in a window using the tkinter package. Options and moves within the game are conducted with a click-button interface.
 
-usage:
+Usage:
     Move directory in terminal to directory of main.py, and type
         'python3 main.py'
 
@@ -63,10 +63,60 @@ usage:
 
 Objects:
     
-    Nim(Frame):
+    Nim(Frame): a widget that inherits from its Frame parent. Frame is a preset class of tkinter. It is the main object that contains all the other components of the game.
 
-        callconstructor(self, ref):
+        callconstructor(self, ref): calls the __init__ method of the parent, pasing ref as the argument
+            args: ref. reference to a widget parent instance
 
-        __init__(self, master=None):
+        __init__(self, master=None): initializes attributes, creates children widgets and calls the mainmenu method
+            args: master. reference to widget parent instance
+
+        mainmenu(self): displays the start widget and removes any other widget from screen. Is called when menuButton is pressed
+
+        rules(self): displays the instructions widget and removes any other widget from screen. Is called when rulesButton is pressed
+
+        custom(self): displays the diy widget and removes any other widget from screen. Is called when cuButton is pressed
+
+        play(self): displays the game widget and removes any other widget from screen. Is called when startButton is pressed
+
+        quit(self): destroys parent object and exits program. Is called when quitButton is pressed
+
+
+    start(Nim): a widget that inherits from its Nim parent. It contains the widgets that are shown on the main menu of the game.
+        __init__(self, master=None): initializes by calling granparent constructor, calls make_widgets
+            args: master. reference to widget parent instance
+
+        make_widgets(self): creates all visible widgets and places them on the screen
+
+        mode_CPU(self,var): gets called when vCPUbutton or vPbutton is pressed. Sets new CPU and enables or diables respective buttons
+            args: var. either 1 or 0 depending on whether game is against the computer or another player
+
+        misere(self,var): gets called when mButton or nButton is pressed. Sets misere or normal mode and enables or diables respective buttons.
+            args: var. either 1 or 0 depending on which mode was clicked
+
+        change_mode(self,var): gets called when grButton or clButton is pressed. Sets greedy or classic version of game and enables or disables respective buttons 
+            args: var, either 1 or 0 depending on which version was selected
+
+        quit(self): calls parent quit method
+
+    
+    game(Nim): a widget that inherits from its Nim parent. It contains the widgets that are shown during the gameplay of the game.
+
+        __init__(self,master=None): initializes itself by calling grandparent constructor, initializes attributes, calls make_widgets
+            args: master. reference to widget parent instance
+        
+        make_widgets(self): creates all visible widgets and places them on the screen
+
+        game_tag(self): returns a string that describes the kind of game being playes.
+    
+        remove_one(self,a): When a stack is clicked, this method is called. Removes one from the selected stack. Does nothing if selected stack is different from one previously selected (if user clicks two different stacks during their turn). Does nothing if user clicks a small stack in greedy version. Handles the case when stack becomes 0. Checks for a win condition by calling check_win.
+            args: a, index of selected stack
+        
+        check_win(self: checks is the game has been won. Checks if all stacks have been exhausted. Records who's turn was last. Updates turn label to state who won. Disables nextButton.
+
+        next_turn(self): Called when nextButton is pressed. Does nothing if user has not clicked on a stack yet. Changes whose turn it is, makes selected be none. Triggers CPU turn if enabled, checks for a win after CPU, if no one won, it updates the turn again.
 
         
+
+
+

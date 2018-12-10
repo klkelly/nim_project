@@ -79,7 +79,7 @@ class start(Nim):
     # creates all the visible widgets
     def make_widgets(self):
         # A window set up with a title, and buttons that will change options, plus a 'start game' option.
-        # Title will be Nim; buttons will be pretty self-evident.
+        # buttons will be pretty self-evident.
         # settings frame, parent of the buttons that go in it, child of the start widget
         self.sett = LabelFrame(self,text="Settings",labelanchor="n")
         # settings' children
@@ -113,7 +113,7 @@ class start(Nim):
         self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
 
     # callback functon that determines whether the game will be against another human or the computer
-    # args: var, either 1 or 0
+    # args: var, either 1 or 0 depending on whether game is against the computer or another player
     def mode_CPU(self, var):
         self.master.CPUplayer = var
         # if cpu player is activated
@@ -169,11 +169,12 @@ class game(Nim):
         self.gameOver = 0
         self.lastPlay = 0
         self.stack = []
+        # randomizes stack contents
         for i in range(self.master.stacknum):
             x = randint(1,9)
             self.stack.append(x)
-        self.make_widgets()
         self.stack_selected= None
+        self.make_widgets()
 
     # creates all the visible widgets
     def make_widgets(self):
@@ -253,7 +254,7 @@ class game(Nim):
             if self.gameOver == 0:
                 self.lastPlay = self.turn
             self.gameOver = 1
-            # updates text on the upper right corner to say who whon
+            # updates text on the upper right corner to say who won
             self.turnLabel["text"] = self.print_turn()
             # prevents user from clicking on the next turn button again
             self.nextButton["state"] = DISABLED
@@ -279,7 +280,7 @@ class game(Nim):
                 self.stack_selected = None
 
 
-# CPU if tree
+    # CPU if tree
     def cpu_turn(self):
         nim_sum = 0
         for i in range(len(self.stack)):
@@ -481,7 +482,7 @@ class instructions(Nim):
     def quit(self):
         super().quit()
 
-# widget that displays the customization menu
+# widget that displays the customization menu, similar to start widget
 class diy(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the grandparent constructor
@@ -490,11 +491,13 @@ class diy(Nim):
         self.make_widgets()
 
     def make_widgets(self):
+        # diy's children
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
-        # settings container
+        # settings frame, parent of the buttons that go in it, child of the diy widget
         self.sett = LabelFrame(self,text = "Customize your game",labelanchor ="n")
+        # setting's children
         self.sett.empty0 = Frame(self.sett,width=20) #spacer
         self.sett.empty1 = Frame(self.sett,width=20) #spacer
         self.stacknum = IntVar() # control variable to be changed by the slider
@@ -505,11 +508,10 @@ class diy(Nim):
         self.sett.nButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="normal", command = lambda: self.misere(0))
         self.sett.clButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="classic", command = lambda: self.change_mode(0))
         self.sett.grButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="greedy", command = lambda: self.change_mode(1))
-        
+        # place widgets on screen
         self.menuButton.grid(column=0, row=2)
         self.quitButton.grid(column=2, row=2)
         self.startButton.grid(column=1,row=2)
-
         self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,padx=10,pady=10)
         self.sett.slider.grid(column=0,row=0,columnspan=8)
         self.sett.vCPUbutton.grid(column=0,row=1)
