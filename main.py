@@ -1,8 +1,10 @@
 #! usr/bin/env python3
 
+#
 from tkinter import *
 from random import randint
 
+# widget that controls the whole game, child of a frame widget ()
 class Nim(Frame):
     def callconstructor(self, ref):
         super().__init__(ref)
@@ -12,65 +14,76 @@ class Nim(Frame):
         top= self.winfo_toplevel()
         top.title("Game of Nim By Keven and Rafa")
         self.grid(sticky=N+S+E+W)
+        # class attribute initialization
         self.CPUplayer = 0
         self.misere = 0
         self.mode = "classic"
         self.stacknum = 3
+        # create children
         self.game = game(self)
         self.start = start(self)
         self.diy = diy(self)
         self.instructions = instructions(self)
         self.mainmenu()
 
+    # displays main menu
     def mainmenu(self):
+        # remove other children widgets from being shown on screen
         self.game.grid_remove()
         self.instructions.grid_remove()
         self.diy.grid_remove()
+        # place the start widget on the screen
         self.start.grid(sticky=N+S+E+W)
 
+    # displays rules
     def rules(self):
+        # remove other children widgets from being shown on screen
         self.game.grid_remove()
         self.start.grid_remove()
+        self.diy.grid_remove()
+        # place the instructions widget on the screen
         self.instructions.grid(sticky=N+S+E+W)
 
+    # displays the customize window
     def custom(self):
+        # remove other children widgets from being shown on screen
         self.game.grid_remove()
         self.start.grid_remove()
         self.instructions.grid_remove()
+        # place the diy widget on the screen
         self.diy.grid(sticky=N+S+E+W)
 
+    # displays game window
     def play(self):
-        print("play")
-        #makes the start menu dissapear, but it is not deleted
+        #makes the other children disappear
         self.start.grid_remove()
         self.diy.grid_remove()
         self.instructions.grid_remove()
-        #makes the game appear
-        #create a new game
+        #creates a new game with current settings
         self.game = game(self)
         self.game.grid(sticky=N+S+E+W)
 
+    # destroys window then exits program
     def quit(self):
         print("quitting")
         self.master.destroy()
         raise SystemExit
 
-
+# widget that contains what we see in the menu
 class start(Nim):
     def __init__(self, master=None): 
-        super().callconstructor(master) # We call the frame constructor
-        self.master = master # master is gonna be the instance of nim
-        self.width = 3500
-        self.height = 2000
+        super().callconstructor(master) # We call the grandparent constructor
+        self.master = master # master is gonna be the parent instance
         self.make_widgets()
+
+    # creates all the visible widgets
     def make_widgets(self):
         # A window set up with a title, and buttons that will change options, plus a 'start game' option.
         # Title will be Nim; buttons will be pretty self-evident.
-        # settings frame
-
+        # settings frame, parent of the buttons that go in it, child of the start widget
         self.sett = LabelFrame(self,text="Settings",labelanchor="n")
-
-        self.sett.empty = Frame(self.sett,width=20) #spacer
+        # settings' children
+        self.sett.empty = Frame(self.sett,width=20) #empty spacer for aesthetic purposes
         self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(1))
         self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(0))
         self.sett.mButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="misere", command = lambda: self.misere(1))
@@ -78,14 +91,15 @@ class start(Nim):
         self.sett.clButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="classic", command = lambda: self.change_mode(0))
         self.sett.grButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="greedy", command = lambda: self.change_mode(1))
         self.sett.cuButton = Button(self.sett,cursor = "hand2", disabledforeground= "#999", text="custom", command =self.master.custom)
+        # start's children widgets
         self.welcomeLabel = Label(self, text = "Welcome to Nim!")
         self.rulesButton = Button(self, cursor = "hand2", text="Rules", command = self.master.rules)
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.welcomeLabel.grid(column=0, row=0, columnspan=3,sticky=N+W+E+S)
 
+        # grid method makes them appear on screen
         self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,padx=10,pady=10)
-
         self.sett.vCPUbutton.grid(column=0, row=0,sticky=N+W+E+S)
         self.sett.vPbutton.grid(column=1, row=0,sticky=N+W+E+S)
         self.sett.empty.grid(column=2,row=0,sticky=N+W+E+S)
@@ -94,56 +108,59 @@ class start(Nim):
         self.sett.clButton.grid(column= 1, row=1,sticky=N+W+E+S)
         self.sett.grButton.grid(column= 2, row=1,sticky=N+W+E+S)
         self.sett.cuButton.grid(column= 3, row=1,sticky=N+W+E+S)
-
         self.rulesButton.grid(column=0, row=5,sticky=N+W+E+S)
         self.startButton.grid(column=1, row=5,sticky=N+W+E+S)
         self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
 
-
+    # callback functon that determines whether the game will be against another human or the computer
+    # args: var, either 1 or 0
     def mode_CPU(self, var):
-        # assign value to the attribute
         self.master.CPUplayer = var
         # if cpu player is activated
         if self.master.CPUplayer:
-            #you cant click on the cpu button again
+            # user can't click on the 1vCPU button again
             self.sett.vCPUbutton["state"]=DISABLED
             self.sett.vPbutton["state"]=NORMAL
         else:
+            # user can't click on the 1v1 button again
             self.sett.vCPUbutton["state"]=NORMAL
             self.sett.vPbutton["state"]=DISABLED
 
-
+    # callback function that determins whethe the game will be in misere mode or not
+    # args: var, either 1 or 0
     def misere(self, var):
         self.master.misere = var
+        # if misere version is activated
         if self.master.misere:
+            # user can't click on the misere button again
             self.sett.mButton["state"]=DISABLED
             self.sett.nButton["state"]=NORMAL
         else:
+            # user can't click on the normal button again
             self.sett.mButton["state"]=NORMAL
             self.sett.nButton["state"]=DISABLED
-
+    #
     def change_mode(self,var):
+        # set standard stack number to 3
+        self.master.stacknum = 3
         if var == 0:
+            # user can't click on classic button again
             self.master.mode = "classic"
-            self.master.stacknum = 3
             self.sett.clButton["state"]=DISABLED
             self.sett.grButton["state"]=NORMAL
             self.sett.cuButton["state"]=NORMAL
         elif var == 1:
+            # user can't click on greedy button again
             self.master.mode = "greedy"
             self.sett.grButton["state"]=DISABLED
             self.sett.clButton["state"]=NORMAL
             self.sett.cuButton["state"]=NORMAL
-        elif var == 2:
-            self.master.mode = "custom"
-            self.sett.cuButton["state"]=DISABLED
-            self.sett.grButton["state"]=NORMAL
-            self.sett.clButton["state"]=NORMAL
 
+    # calls parent's quit method
     def quit(self):
         super().quit()
 
-
+# widget that controls what is shown during the gameplay, child of the Nim widget
 class game(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the frame constructor
@@ -158,59 +175,90 @@ class game(Nim):
         self.make_widgets()
         self.stack_selected= None
 
+    # creates all the visible widgets
     def make_widgets(self):
-        self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
-        self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.nextButton = Button(self, cursor = "hand2", text="Finish your turn", command=self.next_turn)
+        #  game's children widgets
+        self.menuButton = Button(self, cursor = "hand2", text = "Back to menu", command=self.master.mainmenu, fg = "blue")
+        self.quitButton = Button(self, cursor = "hand2", text = "Quit", command = self.quit,fg = "red")
+        self.nextButton = Button(self, cursor = "hand2", text = "Finish your turn", command = self.next_turn)
         self.turnLabel = Label(self, text = self.print_turn())
         self.gameLabel = Label(self, text = self.game_tag(),fg = "#999")
-        self.container = LabelFrame(self, text = "Click to remove one from any stack",labelanchor ="n")
-        self.container.grid(column = 0, row = 1, columnspan=3)
+        self.container = LabelFrame(self, text = "Click to remove one from any stack",labelanchor = "n")
         self.stackbuttons=[]
+        # places widgets on screen
+        self.container.grid(column = 0, row = 1, columnspan=3)
         self.menuButton.grid(column = 0, row = 3)
         self.quitButton.grid(column = 2,row=3)
         self.nextButton.grid(column=1,row=2)
         self.gameLabel.grid(column = 0,row= 0)
         self.turnLabel.grid(column=2, row= 0)
 
+        # creates stack buttons as children of self.container
         for i in range(len(self.stack)):
-            butt = Button(self.container,cursor = "hand2", disabledforeground= "#999",text = self.stack[i],command= lambda a=i: self.remove_one(a))
+            butt = Button(self.container, cursor = "hand2", disabledforeground= "#999", text = self.stack[i], command = lambda a = i: self.remove_one(a))
             self.stackbuttons.append(butt)
-            self.stackbuttons[i].grid(column=i,row= 0,sticky = E+W)
+            # places button on screen
+            self.stackbuttons[i].grid(column = i,row = 0,sticky = E+W)
 
+    # creates text that goes on the upper left corner
+    # returns: text that describes what kind of game is being played
     def game_tag(self):
         tag = str(self.master.mode)
         if self.master.misere:
             tag +=" misere"
         else:
             tag +=" normal"
+        if self.master.CPUplayer:
+            tag += " vs CPU"
+        else:
+            tag += " vs Player 2"
         return (tag)
 
+    # this is run everytime a stack button is clicked. It makes sure the click is valid,
+    # if it is, it decreases the size of the stack by one.
+    # args: a, index of the clicked stack
     def remove_one(self,a):
+        # for greedy mode it checks if clicked stack is in fact the biggest one
+        # if no stack is selected, it means it is a new turn
         if self.master.mode =="greedy" and self.stack_selected == None:
-            if any([i>self.stack[a] for i in self.stack]):
+            # checks if stack clicked is smaller that any other stack
+            if any([i > self.stack[a] for i in self.stack]):
                 print ("you must select from the biggest pile(s)")
+                # stops the function since the user is only allowed to click on the biggest
                 return
+        # checks if stack clicked is the same one as previous
+        # if no stack is selected, it is a new turn. therefore any stack is valid
+        # if a stack is already selected, the clicked stack has to be the same as what was clicked before
         if self.stack_selected == a or self.stack_selected == None:
+            # selected stack becomes clicked stack until the method self.next_turn is called
             self.stack_selected = a
             if self.stack[a]>0:
                 self.stack[a] -= 1
+                # updates the appearance of stack button
                 self.stackbuttons[a]["text"]=self.stack[a]
+            # once the stack reaches size 0, the button that represents it is disabled
+            # that way that button can't call this method if clicked again
             if self.stack[a]==0:
                 self.stackbuttons[a]["state"]=DISABLED
+            # check for a win condition after any change to the stack
             self.check_win()
         else:
-            print("you cant select two different stacks")
-    
+            print("you can't select two different stacks")
+
+    # checks if someone has won the game
     def check_win(self):
+        # checks that all stacks are zero
         if all([ i==0 for i in self.stack]):
+            # records current turn as last turn
             if self.gameOver == 0:
                 self.lastPlay = self.turn
             self.gameOver = 1
+            # updates text on the upper right corner to say who whon
             self.turnLabel["text"] = self.print_turn()
-            self.nextButton["state"]=DISABLED
+            # 
+            self.nextButton["state"] = DISABLED
 
-
+    # changes turn
     def next_turn(self):
         # do nothing if the player has not clicked on a stack yet
         if self.stack_selected == None:
@@ -361,8 +409,7 @@ class game(Nim):
             if self.stack[i] == 0:
                 self.stackbuttons[i]["state"]=DISABLED
 
-        print("im a robot weeeee")
-
+    # computes label text
     def print_turn(self):
         if self.gameOver == 1:
             if self.master.misere:
@@ -396,6 +443,7 @@ class game(Nim):
         super().quit()
 
 
+# widget that contains how we see the rules
 class instructions(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the frame constructor
@@ -405,6 +453,7 @@ class instructions(Nim):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.rulesText = Text(self, width=50, height=20, wrap="word")
+        # hardcoded because we are lazy
         self.rulesText.insert('1.0', ('From Wikipedia: Nim is a mathematical game of strategy in which two players take '
             'turns removing objects from distinct heaps or piles. On each turn, a player must remove at least one object'
             ', and may remove any number of objects provided they all come from the same heap/pile. The goal of the game'
@@ -418,10 +467,11 @@ class instructions(Nim):
         self.rulesText.grid(column=0, row=0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
     def quit(self):
         super().quit()
 
-
+# widget that displays the customization menu
 class diy(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the frame constructor
@@ -437,7 +487,7 @@ class diy(Nim):
         self.sett = LabelFrame(self,text = "Customize your game",labelanchor ="n")
         self.sett.empty0 = Frame(self.sett,width=20) #spacer
         self.sett.empty1 = Frame(self.sett,width=20) #spacer
-        self.stacknum = IntVar()
+        self.stacknum = IntVar() # control variable to be changed by the slider
         self.sett.slider = Scale(self.sett, variable=self.stacknum,from_= 1, to= 9,length=200,orient=HORIZONTAL, label="Number of stacks",command = self.change_stack)
         self.sett.vCPUbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1vCPU", command = lambda: self.mode_CPU(1))
         self.sett.vPbutton = Button(self.sett, cursor = "hand2", disabledforeground= "#999", text="1v1", command = lambda: self.mode_CPU(0))
