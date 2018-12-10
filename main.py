@@ -396,28 +396,34 @@ class game(Nim):
         super().quit()
 
 
-class instructions(Nim):
+class instructions(Nim):    
     def __init__(self,master=None):
         super().callconstructor(master) # We call the frame constructor
         self.master = master
         self.make_widgets()
+
     def make_widgets(self):
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
-        self.rulesText = Text(self, width=50, height=20, wrap="word")
+        self.rulesText = Text(self, width=50, height=30, wrap="word")
         self.rulesText.insert('1.0', ('From Wikipedia: Nim is a mathematical game of strategy in which two players take '
             'turns removing objects from distinct heaps or piles. On each turn, a player must remove at least one object'
             ', and may remove any number of objects provided they all come from the same heap/pile. The goal of the game'
             ' is to be the player who removes the last object.\n\nIn our implementation of this game, players will take'
-            ' turns removing objects from what we have called "stacks". There are two modes of play:\n  In Misere-mode, t'
+            ' turns removing objects from what we have called "stacks". There are two modes of play:\n  In Misere-mode t'
             'he object of the game is to avoid taking the last object from the last remaining stack. Taking the last obj'
             'ect will result in the player losing the game!\n  In Normal-mode, the player who takes the last object from'
-            'the last stack wins!'))
+            ' the last stack wins!\n\n In classic mode, there will be three stacks of randomly generated numbers, and th'
+            'e player may take as many from whichever stack they prefer;\n In greedy mode, the player may only take obje'
+            'cts from the stack with the largest number of objects remaining. \n Our custom option will allow the player'
+            ' to choose how many stacks they would like to play with, from 1-9 stacks! We recommend playing with 1 stack'
+            ' if you want to feel good about yourself!'))
         self.menuButton.grid(column=0, row=1)
         self.quitButton.grid(column=0, row=2)
         self.rulesText.grid(column=0, row=0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
     def quit(self):
         super().quit()
 
