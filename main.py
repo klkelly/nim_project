@@ -97,7 +97,6 @@ class start(Nim):
         self.startButton = Button(self, cursor = "hand2", text="Start Game", command = self.master.play , fg="green")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.welcomeLabel.grid(column=0, row=0, columnspan=3,sticky=N+W+E+S)
-
         # grid method makes them appear on screen
         self.sett.grid(column=0,row=1,columnspan=3,sticky=N+W+E+S,padx=10,pady=10)
         self.sett.vCPUbutton.grid(column=0, row=0,sticky=N+W+E+S)
@@ -112,7 +111,7 @@ class start(Nim):
         self.startButton.grid(column=1, row=5,sticky=N+W+E+S)
         self.quitButton.grid(column=2, row=5,sticky=N+W+E+S)
 
-    # callback functon that determines whether the game will be against another human or the computer
+    # callback method that determines whether the game will be against another human or the computer
     # args: var, either 1 or 0 depending on whether game is against the computer or another player
     def mode_CPU(self, var):
         self.master.CPUplayer = var
@@ -126,7 +125,7 @@ class start(Nim):
             self.sett.vCPUbutton["state"]=NORMAL
             self.sett.vPbutton["state"]=DISABLED
 
-    # callback function that determins whethe the game will be in misere mode or not
+    # callback method that changes whether the game will be in misere mode or not
     # args: var, either 1 or 0
     def misere(self, var):
         self.master.misere = var
@@ -139,7 +138,9 @@ class start(Nim):
             # user can't click on the normal button again
             self.sett.mButton["state"]=NORMAL
             self.sett.nButton["state"]=DISABLED
-    #
+
+    # callback method that changes whether the game will be greedy or classic
+    # args: var, either 1 or 0
     def change_mode(self,var):
         # set standard stack number to 3
         self.master.stacknum = 3
@@ -280,7 +281,7 @@ class game(Nim):
                 self.stack_selected = None
 
 
-    # CPU if tree
+    # CPU if tree, determines CPU action
     def cpu_turn(self):
         nim_sum = 0
         for i in range(len(self.stack)):  # This loop computes the nim_sum, a value derived from the xor computation of all the stacks in the game
@@ -329,8 +330,8 @@ class game(Nim):
                                 ran1 = randint(0,len(self.stack)-1)
                             ran2 = randint(1,self.stack[ran1])
                             self.stack[ran1] -= ran2
-
-                        else:  # Otherwise, the computer will remove pieces from a stack so that the nim sum becomes zero. If this happens, the computer will win 100% of the time.
+                        # Otherwise, the computer will remove pieces from a stack so that the nim sum becomes zero. If this happens, the computer will win 100% of the time.
+                        else:  
                             for i in range(len(self.stack)):
                                 if self.stack[i]^nim_sum < self.stack[i]:
                                     self.stack[i] = self.stack[i]^nim_sum
@@ -451,12 +452,13 @@ class game(Nim):
 # widget that contains how we see the rules
 class instructions(Nim):
     def __init__(self,master=None):
-        super().callconstructor(master) # We call the frame constructor
-        self.master = master #
+        super().callconstructor(master) # We call the grandparent constructor
+        self.master = master # master is gonna be the parent instance
         self.make_widgets()
 
-
+    # makes the widgets that will be displayed on screen and places them
     def make_widgets(self):
+        # instruction's children
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
         self.quitButton = Button(self, cursor = "hand2", text="Quit", command=self.quit,fg="red")
         self.rulesText = Text(self, width=50, height=20, wrap="word")
@@ -473,12 +475,14 @@ class instructions(Nim):
             'cts from the stack with the largest number of objects remaining. \n Our custom option will allow the player'
             ' to choose how many stacks they would like to play with, from 1-9 stacks! We recommend playing with 1 stack'
             ' if you want to feel good about yourself!'))
+        # places them on screen
         self.menuButton.grid(column=0, row=1)
         self.quitButton.grid(column=0, row=2)
         self.rulesText.grid(column=0, row=0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+    # call parent's quit method
     def quit(self):
         super().quit()
 
@@ -487,9 +491,10 @@ class diy(Nim):
     def __init__(self,master=None):
         super().callconstructor(master) # We call the grandparent constructor
         self.master = master # master is gonna be the parent instance
-        self.stacknum= 0
+        self.stacknum= 1
         self.make_widgets()
 
+    # creates and places all widgets on screen
     def make_widgets(self):
         # diy's children
         self.menuButton = Button(self, cursor = "hand2", text="Back to menu", command=self.master.mainmenu, fg="blue")
@@ -523,44 +528,57 @@ class diy(Nim):
         self.sett.clButton.grid(column=6,row=1)
         self.sett.grButton.grid(column=7,row=1)
 
+    # changes the number of stacks on the parent instance
     def change_stack(self,num):
         self.master.stacknum = self.stacknum.get()
 
+    # callback functon that determines whether the game will be against another human or the computer
+    # args: var, either 1 or 0 depending on whether game is against the computer or another player
     def mode_CPU(self, var):
-        # assign value to the attribute
         self.master.CPUplayer = var
         # if cpu player is activated
         if self.master.CPUplayer:
-            #you cant click on the cpu button again
+            # user can't click on the 1vCPU button again
             self.sett.vCPUbutton["state"]=DISABLED
             self.sett.vPbutton["state"]=NORMAL
         else:
+            # user can't click on the 1v1 button again
             self.sett.vCPUbutton["state"]=NORMAL
             self.sett.vPbutton["state"]=DISABLED
 
-
+    # callback function that determins whethe the game will be in misere mode or not
+    # args: var, either 1 or 0
     def misere(self, var):
         self.master.misere = var
+        # if misere version is activated
         if self.master.misere:
+            # user can't click on the misere button again
             self.sett.mButton["state"]=DISABLED
             self.sett.nButton["state"]=NORMAL
         else:
+            # user can't click on the normal button again
             self.sett.mButton["state"]=NORMAL
             self.sett.nButton["state"]=DISABLED
 
+    # callback method that changes whether the game will be greedy or classic
+    # args: var, either 1 or 0
     def change_mode(self,var):
+        # user can't click on classic button again
         if var == 0:
             self.master.mode = "classic"
             self.sett.clButton["state"]=DISABLED
             self.sett.grButton["state"]=NORMAL
+        # user can't click on greedy button again
         elif var == 1:
             self.master.mode = "greedy"
             self.sett.grButton["state"]=DISABLED
             self.sett.clButton["state"]=NORMAL
 
+    # call parent's quit method
     def quit(self):
         super().quit()
 
+# creates root frame, assigns it as its master to the Nim instance and starts the game
 if __name__ == "__main__":
     root = Tk()
     app = Nim(master=root)
