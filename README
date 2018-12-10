@@ -1,0 +1,72 @@
+Keven Kelly, 1155664, klkelly
+Rafaella Graña, 1531909, graa
+
+CMPUT 274 Fall 2018
+Final Project: The Game of Nim
+
+*****
+
+File contents: main.py, README
+
+*****
+
+NOTE: It is expected that running this software, the user has installed Python version 3.5 or later, and has not uninstalled the tkinter package that is distrubed as part of the Python installation! Because of the interface of this game involves click-buttons it is recommended the user have a mouse (although TAB to shift through options and SPACEBAR to 'click' buttons also works!)
+
+
+The Game of Nim is a GUI implementation of a Nim game. For information about Nim, please see wikipedia: https://en.wikipedia.org/wiki/Nim
+
+The game itself is a mathematical strategy game, where two players attempt to remove objects from a pile (in our game, we call them 'stacks', because this is Computing Science, after all) and either attempt to be the person to take the last piece from the game, or to force the other player to be the one to take the last piece.
+
+The game runs in a window using the tkinter package. Options and moves within the game are conducted with a click-button interface.
+
+usage:
+    Move directory in terminal to directory of main.py, and type
+        'python3 main.py'
+
+    The game will open in a new window, at the start screen.
+    Select the mode of play as well as optional settings by clicking the boxes to select them.
+
+        Game modes are:
+            1vCPU: The player plays against a computer AI opponent - very hard for the classic version, quite rudimentary and easy for the greedy version.
+
+            1v1: Two players take turns playing against each other.
+
+        Game types are:
+            Misere: The last player to pick up a piece from the last stack loses the game. This is a game of avoision: try to produce a situation where the opponent must pick up the last piece.
+
+            Normal: A normal game mode, where the player to pick up the final piece from the last stack wins the game. This is a classic style game, where the final active turn wins the game, i.e., you want to produce a situation where you end up becoming the person to pick up the final piece.
+
+        Optional settings are:
+            Classic: 3 stacks of randomly determined values from 1-9 are generated. Players can take from any stack, and can take as many items as they want.
+
+            Greedy: 3 stacks of randomly determined values from 1-9 are generated. Players are restricted to taking only from the largest present stack.
+
+            Custom: The user can define the number of stacks to be generated, from 1 to 9, and then can select game types and modes as well as choose to play classic or greedy style rules.
+
+    Click 'Rules' to read the rules of the Nim game (including the difference between misere and normal modes, as well as the idea behind the greedy version of the game)
+
+        Click 'Back to menu' to return to game-selection menu.
+
+    Click Quit (at any time, in any menu) to close the application.
+
+    Once the desired options are selected, click 'Start Game' to begin gameplay.
+
+    In gameplay:
+
+        Clicking one of the stack buttons will decrement its value (if it is a valid move). To conclude the turn, click 'Finish Turn' button.
+
+        As stacks become unavailable for selection, they will be grayed out. Returning to main menu via 'Back to menu' button will end the game prematurely - a new game can be started from this point.
+
+        Game ends when a victory condition has been achieved: someone has taken the last piece from the last stack (i.e. all the stacks == 0).
+
+            When the game has ended, the 'Finish Turn' button will be disabled; to continue, either click 'Back to menu' or 'Quit'.
+
+Objects:
+    
+    Nim(Frame):
+
+        callconstructor(self, ref):
+
+        __init__(self, master=None):
+
+        
