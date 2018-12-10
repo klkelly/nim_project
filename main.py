@@ -282,132 +282,132 @@ class game(Nim):
 # CPU if tree
     def cpu_turn(self):
         nim_sum = 0
-        for i in range(len(self.stack)):
+        for i in range(len(self.stack)):  # This loop computes the nim_sum, a value derived from the xor computation of all the stacks in the game
             nim_sum = nim_sum^self.stack[i]
-        if self.master.mode != "greedy":
-            if self.master.misere:
+        if self.master.mode != "greedy": v# If the mode of the game is "classic"
+            if self.master.misere:  # If the game is played with misere rules:
                 stacks_left = 0
                 big_stacks = 0
-                for i in self.stack:
+                for i in self.stack:  # This loop will determine how many stacks still have items to remove in them
                     if i > 0:
                         stacks_left += 1
                     if i > 1:
                         big_stacks += 1
-                if stacks_left % 2:
-                    if big_stacks == 1:
-                        for i in range(len(self.stack)):
-                            if self.stack[i] > 1:
+                if stacks_left % 2:  # If there are an odd number of stacks left:
+                    if big_stacks == 1:  # If there is exactly one stack with more than 1 item in it:
+                        for i in range(len(self.stack)):  # Find the stack with more than 1 item, and remove from it until it is 1.
+                            if self.stack[i] > 1: 
                                 self.stack[i] = 1
                                 break
-                    elif big_stacks > 1:
+                    elif big_stacks > 1:  # If there are more than 1 remaining stack with a value greater than one:
                         for i in range(len(self.stack)):
-                            if self.stack[i]^nim_sum < self.stack[i]:
+                            if self.stack[i]^nim_sum < self.stack[i]:  # Find the first stack where the nim_sum value 
                                 self.stack[i] = self.stack[i]^nim_sum
                                 break
-                    else:
+                    else:  # If there are no stacks with more than 1 item remaining, the computer will randomly remove one of the stacks from play.
                         ran1 = randint(0,len(self.stack)-1)
                         while not self.stack[ran1]:
                             ran1 = randint(0,len(self.stack)-1)
                         ran2 = randint(1,self.stack[ran1])
                         self.stack[ran1] -= ran2
-                else:
-                    if big_stacks == 1:
+                else: # If there are an even number of stacks left:
+                    if big_stacks == 1:  # Once again, if there is only one big stack remaining, the algorithm removes it completely.
                         for i in range(len(self.stack)):
                             if self.stack[i] > 1:
                                 self.stack[i] = 0
                                 break
-                    elif big_stacks == 0:
+                    elif big_stacks == 0:  # If there are no big stacks left, the computer will pick one of the small stacks and remove it.
                         for i in range(len(self.stack)):
                             if self.stack[i] > 0:
                                 self.stack[i] = 0
                                 break
-                    else:
-                        if nim_sum == 0:
+                    else: # If there are more than one big stack remaining
+                        if nim_sum == 0:  # If the nim sum is zero, the computer randomly removes pieces from a random stack.
                             ran1 = randint(0,len(self.stack)-1)
                             while not self.stack[ran1]:
                                 ran1 = randint(0,len(self.stack)-1)
                             ran2 = randint(1,self.stack[ran1])
                             self.stack[ran1] -= ran2
 
-                        else:
+                        else:  # Otherwise, the computer will remove pieces from a stack so that the nim sum becomes zero. If this happens, the computer will win 100% of the time.
                             for i in range(len(self.stack)):
                                 if self.stack[i]^nim_sum < self.stack[i]:
                                     self.stack[i] = self.stack[i]^nim_sum
                                     break
 
-            else:
-                if nim_sum == 0:
+            else:  # If the game being played is with the 'normal' game rules:
+                if nim_sum == 0:  # If the nim sum is zero, the computer randomly removes pieces from a random stack.
                     ran1 = randint(0,len(self.stack)-1)
                     while not self.stack[ran1]:
                         ran1 = randint(0,len(self.stack)-1)
                     ran2 = randint(1,self.stack[ran1])
                     self.stack[ran1] -= ran2
-                else:
+                else:  # Othwerise, if the nim sum is not zero, the cmputer will remove pieces from a stack so that the nim sum becomes zero.
                     for i in range(len(self.stack)):
                         if self.stack[i]^nim_sum < self.stack[i]:
                             self.stack[i] = self.stack[i]^nim_sum
                             break
-        else:
-            maxstack = max(self.stack)
-            num_max = 0
+        else:  # Otherwise, in the case of the game being played in greedy mode:
+            maxstack = max(self.stack)  # Determine the largest heap in the stack
+            num_max = 0  
             no_maxes = []
-            for i in self.stack:
+            for i in self.stack:  # Determine how many stacks have the max value
                 if i == maxstack:
                     num_max += 1
-                else:
+                else:  # If it isn't the same as the largest stack add it to a new temporary list.
                     no_maxes.append(i)
-            if all([ i == 0 for i in no_maxes]):
+            if all([ i == 0 for i in no_maxes]):  # If everything other than the largest stack is zero:
                 max_no_maxes = 0
                 num_no_max = 0
-            else:    
+            else:  # Otherwise, calculate the maximum of the temporary list, and determine how many of those maxima there are
                 max_no_maxes = max(no_maxes)
                 num_no_max = 0
                 for i in no_maxes:
                     if i == max_no_maxes:
                         num_no_max += 1
-            if num_max == 1:
+            if num_max == 1:  # If there is only one overall maximum:
                 if (num_no_max % 2) or not (num_no_max % 2) and self.master.misere == 0:
-                    for i in range(len(self.stack)):
-                        if self.stack[i] == maxstack:
+                    for i in range(len(self.stack)):   # If there is an odd number of secondary maxes, OR if it is misere mode and there are an even number of secondary maxes
+                        if self.stack[i] == maxstack: # Take the largest stack and make it equal to the secondary maximum.
                             self.stack[i] = max_no_maxes
                             break
-                else:
-                    for i in range(len(self.stack)):
+                else:  # Otherwise, if it isn't the above case
+                    for i in range(len(self.stack)): # Take the largest stack in the game and make it zero.
                         if self.stack[i] == maxstack:
                             self.stack[i] = 0
                             break
-            else:
-                if self.master.misere:
-                    if num_max % 2:
-                        if num_no_max % 2:
-                            for i in range(len(self.stack)):
+            else:  # If there are two or more overall maximums:
+                if self.master.misere:  # If this is the misere mode
+                    if num_max % 2:  # If there are an odd number of overall maxima
+                        if num_no_max % 2:  # If there are an odd number of secondary maxima
+                            for i in range(len(self.stack)):  # Find one of the overall maxima and reduce it to zero
                                 if self.stack[i] == maxstack:
                                     self.stack[i] = 0
                                     break
-                        else:
-                            for i in range(len(self.stack)):
+                        else:  # If there are an even number of secondary maxima
+                            for i in range(len(self.stack)):  # Find a stack with the maximum value, and reduce it to the secondary maximum.
                                 if self.stack[i] == maxstack:
                                     self.stack[i] = max_no_maxes
                                     break
-                    else:
-                        for i in range(len(self.stack)):
+                    else:  # Otherwise, if there are an even number of overall maxima
+                        for i in range(len(self.stack)):  # Reduce one of the overal maxima to zero
                             if self.stack[i] == maxstack:
                                 self.stack[i] = 0
                                 break
-                else:
-                    if num_max % 2:
-                        for i in range(len(self.stack)):
+                else:  # Otherwise if the game is in normal mode
+                    if num_max % 2:  # If there are an odd number of overall maxima
+                        for i in range(len(self.stack)):  # Reduce one of the overall maxima by a pseudo-random amount
                             if self.stack[i] == maxstack:
                                 self.stack[i] = self.stack[i] - randint(1,self.stack[i])
                                 break
-                    else:
+                    else:  # If there is an even number of overall maxima reduce one of the max value stacks to zero
                         for i in range(len(self.stack)):
                             if self.stack[i] == maxstack:
                                 self.stack[i] = 0
                                 break
 
 
-        for i in range(len(self.stack)):
+        for i in range(len(self.stack)):  # This refreshes the buttons after the CPU takes its turn.
             self.stackbuttons[i]["text"] = self.stack[i]
             if self.stack[i] == 0:
                 self.stackbuttons[i]["state"]=DISABLED
