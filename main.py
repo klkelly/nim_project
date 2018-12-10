@@ -1,3 +1,7 @@
+#Keven Kelly, 1155664, klkelly
+#Rafaella Graña, 1531909, graa
+#CMPUT 274 Fall 2018
+#Final Project: The Game of Nim
 #! usr/bin/env python3
 
 #
@@ -8,7 +12,7 @@ from random import randint
 class Nim(Frame):
     def callconstructor(self, ref):
         super().__init__(ref)
-    def __init__(self, master=None):
+    def __init__(self, master = None):
         self.callconstructor(master) # calls the constructor for the parent class
         self.master = master
         top= self.winfo_toplevel()
