@@ -89,13 +89,13 @@ Objects:
         make_widgets(self): creates all visible widgets and places them on the screen
 
         mode_CPU(self,var): gets called when vCPUbutton or vPbutton is pressed. Sets new CPU and enables or diables respective buttons
-            args: var. either 1 or 0 depending on whether game is against the computer or another player
+            args: var. bool, either 1 or 0 depending on whether game is against the computer or another player
 
         misere(self,var): gets called when mButton or nButton is pressed. Sets misere or normal mode and enables or diables respective buttons.
-            args: var. either 1 or 0 depending on which mode was clicked
+            args: var. bool, either 1 or 0 depending on which mode was clicked
 
         change_mode(self,var): gets called when grButton or clButton is pressed. Sets greedy or classic version of game and enables or disables respective buttons 
-            args: var, either 1 or 0 depending on which version was selected
+            args: var. bool, either 1 or 0 depending on which version was selected
 
         quit(self): calls parent quit method
 
@@ -110,9 +110,9 @@ Objects:
         game_tag(self): returns a string that describes the kind of game being playes.
     
         remove_one(self,a): When a stack is clicked, this method is called. Removes one from the selected stack. Does nothing if selected stack is different from one previously selected (if user clicks two different stacks during their turn). Does nothing if user clicks a small stack in greedy version. Handles the case when stack becomes 0. Checks for a win condition by calling check_win.
-            args: a, index of selected stack
+            args: a. int, index of selected stack
         
-        check_win(self: checks is the game has been won. Checks if all stacks have been exhausted. Records who's turn was last. Updates turn label to state who won. Disables nextButton.
+        check_win(self): checks is the game has been won. Checks if all stacks have been exhausted. Records who's turn was last. Updates turn label to state who won. Disables nextButton.
 
         next_turn(self): Called when nextButton is pressed. Does nothing if user has not clicked on a stack yet. Changes whose turn it is, makes selected be none. Triggers CPU turn if enabled, checks for a win after CPU, if no one won, it updates the turn again.
 
@@ -132,6 +132,7 @@ Objects:
 
         quit(self): calls parent quit method
     
+    
     diy(Nim): a widget that inherits from its Nim parent. It contains the widgets that are shown in the customization state of the game
 
         __init__(self, master=None): initializes by calling granparent constructor, initialized stack attribute calls make_widgets
@@ -141,13 +142,13 @@ Objects:
             args: num, int number of stacks set by the user
 
         mode_CPU(self,var): gets called when vCPUbutton or vPbutton is pressed. Sets new CPU and enables or diables respective buttons
-            args: var. either 1 or 0 depending on whether game is against the computer or another player
+            args: var. bool, either 1 or 0, depending on whether game is against the computer or another player
 
         misere(self,var): gets called when mButton or nButton is pressed. Sets misere or normal mode and enables or diables respective buttons.
-            args: var. either 1 or 0 depending on which mode was clicked
+            args: var. bool, either 1 or 0 depending on which mode was clicked
 
         change_mode(self,var): gets called when grButton or clButton is pressed. Sets greedy or classic version of game and enables or disables respective buttons 
-            args: var, either 1 or 0 depending on which version was selected
+            args: var, bool, either 1 or 0 depending on which version was selected
 
         quit(self): calls parent quit method
     
